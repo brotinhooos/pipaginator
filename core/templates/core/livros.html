@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Livros</title>
+</head>
+<body>
+    <h1>Catálogo de Livros</h1>
+
+  
+    <form method="get" action="">
+        <div>
+            <label for="id_pesquisatitulo">Título:</label>
+            <input type="text" id="id_pesquisatitulo" name="pesquisatitulo" value="{{ pesquisa }}" placeholder="Pesquisar por título...">
+        </div>
+
+        <div>
+            <label for="id_pesquisaautor">Nome do Autor:</label>
+            <input type="text" id="id_pesquisaautor" name="pesquisaautor" value="{{ pesquisados }}" placeholder="Pesquisar por autor...">
+        </div>
+
+        <div>
+            <label for="id_autor">Filtrar por Autor:</label>
+            <select id="id_autor" name="autor">
+                <option value="">Todos os autores</option>
+                {% for autor in autores %}
+                    <option value="{{ autor.id }}" {% if autor_id == autor.id|stringformat:"s" %}selected{% endif %}>
+                        {{ autor.nome }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div>
+            <label for="id_genero">Filtrar por Gênero:</label>
+            <select id="id_genero" name="genero">
+                <option value="">Todos os gêneros</option>
+                {% for genero in generos %}
+                    <option value="{{ genero.id }}" {% if genero_id == genero.id|stringformat:"s" %}selected{% endif %}>
+                        {{ genero.nome }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <button type="submit">Filtrar</button>
+        <a href="?">Limpar filtros</a>
+    </form>
+
+    <hr>
+
+ 
+    <table border="1" cellpadding="8" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Título</th>
+                <th>Autor</th>
+                <th>Gênero</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for livro in page_obj %}
+                <tr>
+                    <td>{{ livro.titulo }}</td>
+                    <td>{{ livro.autor.nome }}</td>
+                    <td>{{ livro.genero.nome }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="3">Nenhum livro encontrado.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <br>
+
+ 
+    <div>
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}&pesquisatitulo={{ pesquisa|urlencode }}&pesquisaautor={{ pesquisados|urlencode }}&autor={{ autor_id }}&genero={{ genero_id }}">
+                &laquo; Anterior
+            </a>
+        {% endif %}
+
+        <span>
+            Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}&pesquisatitulo={{ pesquisa|urlencode }}&pesquisaautor={{ pesquisados|urlencode }}&autor={{ autor_id }}&genero={{ genero_id }}">
+                Seguinte &raquo;
+            </a>
+        {% endif %}
+    </div>
+</body>
+</html>
